@@ -1,0 +1,1392 @@
+﻿1)What is embeddable?
+Lets say i have a user class and vehicle. User has vehicle.
+
+Now in entity of Vehicle i cna mention as Embeddable
+In user,for vehicle object metion as @Embdedded
+
+In User,
+
+@Embedded
+private Vehicle vehicle;
+
+In Vehicle,
+
+
+@Embeddable
+class Vehicle
+{
+
+}
+
+Now vehicle class info got embedded into user table--single database table. To overide the names,
+
+In userdetails for vehicle object mention as below for overriding column names:
+
+@Embedded
+@AttributeOverrides({
+@AttributeOverride(name="street",column=@Column(name="HOME_STREE_NAME")),
+@AttributeOverride(name="country",column=@Column(name="HOME_COUNTRY_NAME)).
+@AttrbuteOverride(name="state",column=@Column(name="HOME_STATE_NAME))
+})
+private Vehicle vehicle;
+
+
+2)Singleton pattern and how you will break it?
+https://www.geeksforgeeks.org/prevent-singleton-pattern-reflection-serialization-cloning/
+
+3)Different logging levels
+https://stackabuse.com/guide-to-logging-in-spring-boot/
+
+4)Hash map working--refer code decode collection int questions
+5)Concurrent hash map internal implementaion---
+https://knpcode.com/java/concurrency/concurrenthashmap-in-java/
+
+6)GroupBy in java 8 examples:
+
+https://mkyong.com/java8/java-8-collectors-groupingby-and-mapping-example/
+
+7)Procedure and functions
+prodecure :https://www.w3schools.com/sql/sql_stored_procedures.asp
+https://www.mysqltutorial.org/mysql-stored-function/
+
+8)caching in core java---need to check on this?
+
+9)Different types of inheritance in hibernate:
+1)Single table
+2)Table per class strategy
+3)Joined
+
+SINGLETABLE
+
+@Inheritance(stratgey=InheritanceType.SINGLE_TABLE)
+@DescriminatorColumn(name="Vehicle_Type")--name of the column will be Vehicle_type
+Class vehicle
+{
+String vehicleName;
+
+}
+@DescrimatorValue("TwoWheeler")
+Class Car extends Vehicle
+{
+String steeringWheel;
+}
+@DescrimatorValue("TwoWheeler")
+Class Bike extends Vehicle
+{
+String steeringHandle;
+}
+
+By default, it will be single table strategy. So it maps everything to Vehicle table only.
+By deafult Dtype column will be added where it stores each name of the entity i.e Vehicle,Car,Bike under that column. 
+Name of the column is Dtype. This column is updated to Vehicle_Type using @DescriminatorColumn.
+Now,in child class @DescrimatorValue("TwoWheeler") and @DiscriminatorValue("FourWheeler").
+
+In the table respective value provided in descriminatorValues will be stored i.e TwoWheeler and fourWheeler for Dtype column
+
+TABLE PER CLASS:
+
+@Inheritance(stratgey=InheritanceType.TABLE_PER_CLASS)
+Class vehicle
+{
+String vehicleName;
+
+}
+
+Now, 3 tables wll be created.
+Vehicle has id and vehicleName column
+Child table wil have id(2) and vehiclaNme,steeringWheel for Car
+Child table wil have id(2) and vehiclaNme,steeringHandle for Bike.
+
+Its normalized compared to single table because, in single table if that value not there still stored as empty. But columns e.x vehicleName is repeated
+in both child tables.
+
+JOINED:
+
+In this child table have property specific to respective entity only.
+
+@Inheritance(stratgey=InheritanceType.JOINED)
+Class vehicle
+{
+String vehicleName;
+}
+
+Vehicle class have id and vehicleName column. id will have 1,2 and 3 where name would be vehicle/car/bike
+Car class have id and steeringwheel-->2 and steeringWheel respectively
+Bike class have id and steeringHandle respectively-->3 and steeringHandle.
+
+
+10)Failfast and fail safe?
+In failfast, it throws conccurentModification exception when one thread is iterating over collection and other threads tring to 
+modify that collection either by
+adding/removingmodifying objects of that collection.They are called fail fast because they throw immeidately exception when they encounter failure.
+Thats is due to here, therad are iterating over originall list
+
+Failsafe: It does not throw concurrentModificationException when one thread is iterating and other thread is trying to modify even if 
+collection is modified structurally.Because in this, its operating on clone of collecton instead original collection.
+
+Examples: https://www.geeksforgeeks.org/fail-fast-fail-safe-iterators-java/
+
+
+11)Run time polymorhism:
+https://www.javatpoint.com/runtime-polymorphism-in-java
+
+12)Intermdeiate and terminal operation in java 8:
+
+Intermediate operations are lazy in nature and do not get executed immediately. 
+Terminal operations are not lazy, they are executed as soon as encountered. 
+Intermediate operation is memorized and is called when terminal operation is called.
+
+All Intermediate operations return stream as it just transforms stream into another and terminal operation don’t.
+
+Example of Intermediate operations are:
+
+filter(Predicate)
+map(Function)
+flatmap(Function)
+sorted(Comparator)
+distinct()
+limit(long n)
+skip(long n)
+
+
+Example of terminal operations are :
+
+forEach
+toArray
+reduce
+collect
+min
+max
+count
+anyMatch
+allMatch
+noneMatch
+findFirst
+findAny
+
+13)How do you customer serialization and deserialization?
+
+https://www.geeksforgeeks.org/customized-serialization-and-deserialization-in-java/
+
+14)CasadeType what is cascadetype and what all different casacade type in hibernate?
+https://www.baeldung.com/jpa-cascade-types
+
+15)Permspace and metaspace
+
+PermGen	MetaSpace
+It is removed from java 8.	 		It is introduced in Java 8.
+PermGen always has a fixed maximum size.	Metaspace by default auto increases its size depending on the underlying OS.
+Contiguous Java Heap Memory.			Native Memory(provided by underlying OS).
+Ineffiecient garbage collection.		Effiecient garbage collection
+
+https://www.baeldung.com/java-permgen-metaspace#:~:text=Simply%20put%2C%20Metaspace%20is%20a,region%20grows%20automatically%20by%20default.
+
+spring security--springsecurityadapter--configuration--extends webadapter.
+
+
+16)Generator types in hibernate:
+
+@GeneratedValue(strategy=GeneratedType.AUTO)--deafult and recommended option
+
+@GeneratedValue(strategy=GeneratedType.IDENTITY)--hibernate is going to use identity column here. This feature available in some DB's.
+@GeneratedValue(strategy=GeneratedType.SEQUENCE)--to maintain sequence Databse manage them selves
+@GeneratedValue(strategy=GeneratedType.TABLE)--it generates sepearte table for primary key
+
+17)Fetching strategy in hibernate:
+
+FetchType:LAZY
+Here,it wont initialize entire object. It initialize first level memebr variables of object. It initialize list only when we actually access it.
+
+In UserDetails.java there is a list of vehicle.
+Here,
+
+ @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+List<Vehicle> vehicleList=new ArrayList<Vehicle>();
+In this it fetches first level meber variables and keep it ready as proxy.
+It initialize the list only when that list is invoked.
+
+SessionFactory sessionFactory=new Configuartion().buildSessionfactor().build();
+sessionFactory.openSession();
+User user=new USer();
+user.setName("USER1");
+user.setName("1");
+Address add=new Address();
+address.setName("UPPUNDA");
+user.setAddressList(newArrayList<Address>);
+session.save(user);
+User user=(user)session.get("1");
+user.getAddressList()--now it fetches addressList.
+
+In case of EAGER,
+ @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+List<Vehicle> vehicleList=new ArrayList<Vehicle>();
+
+It fetches and initialize at one shot.
+
+https://www.baeldung.com/hibernate-lazy-eager-loading
+
+18)Different level of caches:
+
+1)firstlevel--session
+2)second level
+3)query level cache
+
+1)first level cache
+Hibernate by default associates with first level cache. Its implemented by session objects
+When we update any object inside session, if we try to update again,it wont really update again.There will not be two update queries.
+It will be in persistent context and hibernate will monitor that object.
+Now if we do get(1) twice it just hit DB once as its enabled with first level cache.
+Instead of hitting twice,ithibernate intelligently detectswhats the minimum no of queries needs to be run. Based on that it triggers update queries.
+Same process follows for select as well.
+In first level cache it really wont fetch and initialize list objects if it's not obsolutely required.
+But once we close the session, and try to fetch list from the user details lets say it throws exception.
+
+Second level cache:--a)Across session in application
+		     b)across application(different session in diff applications)
+		     c)across clusters (diff application deployed into diff servers and they are all talking to diff database)
+
+SessionFactory sessionFactory=new Configuration().buildSessionFactory().build();
+Session session =sessionFactory.openSession();
+session.beginTransaction();
+
+		     
+If we dont configure second level cache, once we do close session and open new session and do get, it again hit DB to fetch the details.
+Second level cache can be used across sessions.
+
+in Hibernate.cfg.xml,
+<property name"cache.provider-class">org.hibernate.cache.EhCacheprovider</property>--Eh cahe provider is provider name.
+<property name="cache.use-second-level-cache>true</property>--to tell hibernate to switch on to second-level cache
+
+2)add particular jar for dependency for EHCACHE provide
+3)in entity,
+
+@Entity
+@Cacheable(tells hibernate that this entity is cacheable and this has to consider for cahcing)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY,region="employee")--tells about configuration about caching
+
+1)READ_ONLY-basic leve of cahing. It assumes that data we have is read only data.Applciation going to read only data not going into write into DB.
+Hibernate assumes that data have only fetch/read only data from database not writng into DB for USER_DETAILS.
+2)READ_WRITE
+it keeps track of update of entity..It does not checks 
+
+TRASACTIONAL:strictest of all.cache is on trasactioanal basis.But we dont have significant benifit from this.
+
+
+https://www.youtube.com/watch?v=TMZZg-HEjiE&list=PL4AFF701184976B25&index=35
+3)QueryLevelCache:
+Session session=sessionFactory.openSession();
+session.beginTransaction();
+Query query=session.createQuery("from UserDetails where user.UserId=1");
+List records=query.list();
+session.getTransaction().commit;
+session.close();
+Session session2=sessionFactory.openSession();
+session2.beginTransaction();
+Query query=session2.createQuery("from UserDetails where user.UserId=1");
+List records=query.list();
+session.getTransaction().commit;
+
+to make it cacheable,
+query.setCacheable(true);--it not only caches the results. It also tells the query to look at second level cache and if already there.
+
+1)if query cache not already having value, go to the database and pull up the recor dnad set the query cache
+2)if query cache is already having the value,pull up the data fro query cache
+
+We need to use query cache carefully. 
+
+now two select queries are running,through we specified second-level-cache.
+
+For query, we need to enable query cache to enable cache.
+<property name="cache.user-query-cache">true</property> along with second level cache.
+results of query will not be stored in the  cache as results of session.get(object)
+https://www.youtube.com/watch?v=iwCdyr0bdkw&list=PL4AFF701184976B25&index=36
+
+19)
+
+Different types of scopes:
+1)Singleton-for every request same instance will be returned. During initialization spring container will initialize all the beans and keep it ready.
+It returns same instance of that object irrespective of multiple getBean call.
+2)prototype-for each get bean it returns different instance.New bean object is created for every request when there is getBean.
+No matter if its ref or get Bean call. It creates new bean.
+3)request-new bean created for each servelet request.Spring will be aware of when new request will happen. Depending on each request it creates 
+new bean .For every new request, it creates new instance of bean. If its in same request it will return the same instance.
+4)session: As long as one user accessing single session no matter how many calls to the getBean, it returns the same object instance if its in same session.
+If its different session, it creates different object bean.
+<bean id="" class="com.traingle.Traingle" scope="prototype"/>
+
+in annotation:
+@Scope("request")
+
+5)global http session: new bean per HTTP global session.
+
+
+
+CascadingTypes in Hibernate:
+https://www.baeldung.com/jpa-cascade-types
+
+20)Session and session factory:
+https://www.youtube.com/watch?v=B-Z-urB01NE
+
+21)Flatmap in core java:
+
+public class Java8StreamFlatMapNumber {
+ 
+    public static void main(String[] args)
+    {
+        int[][] numbers={
+                {1,2},
+                {3,4},
+                {5,6}
+        };
+         //Stream<int[]>
+        Stream<int[]> temp = Arrays.stream(numbers);
+        List<Integer> listOfIntegers= temp
+                .flatMap( x -> Arrays.stream(x).boxed())
+                .map(e -> 2*e)
+                .collect(Collectors.toList());
+ 
+        System.out.println(listOfIntegers);
+ 
+    }
+}
+
+[2, 4, 6, 8, 10, 12]
+
+https://mkyong.com/java8/java-8-flatmap-example/
+
+22)Spring profiles in spring boot:
+
+Use spring.profiles.active=prod in application.properties
+
+https://www.springboottutorial.com/spring-boot-profiles
+
+23)Spring actuators:
+1)Its a  manufacturing term that refers to mechanical device for moving/controlling something
+it generates large amount of motion from small change..
+2)In spring boot, its an additional feature ,it mainly help you to monitor and manage your application
+when you push to production.
+3)Feature inclues auditiong/health and metrics gathering and many more features that can be automaticlaly 
+applied to your application.
+4) we need to enable spring-boot-starer-actuator in your pom.xml.
+5)Using spring boot actuator we can access thsoe flows like what bean created
+whats the CPU usage and HTTP hits your server handled.
+
+24)Spring boot dev tools:
+
+in pom.xml:add below dependecies:
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+
+
+
+25)Spring data jpa:
+
+https://www.journaldev.com/17034/spring-data-jpa
+
+
+26)How you will exclude tomcat in spring bot?
+
+Inside <dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-web</artifactId>
+<exclusion>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-tomcat</artifactId>
+</exclusion>
+//use jetty instead
+<dependency>
+<groupId>org.springframework.boot</groupId>
+<artifactId>spring-boot-starter-jetty</artifactId>
+</dependecy>
+
+
+27)Stream api vs collection api:
+https://www.geeksforgeeks.org/difference-between-streams-and-collections-in-java/
+
+28)JAVA custom annotation:
+
+https://www.javatpoint.com/java-annotation
+
+29)statement vs callcable statment vs prepared statments
+https://www.javatpoint.com/jdbc-interview-questions
+
+30)Difference between iterator and list iterator
+
+https://www.geeksforgeeks.org/difference-between-an-iterator-and-listiterator-in-java/
+
+31)Dofferent types of garbage collectors?
+
+https://www.javatpoint.com/types-of-garbage-collector-in-java
+
+32) SOLID principals:
+https://www.javatpoint.com/solid-principles-java
+
+33) How to find second higest salary using SQL?
+SELECT Max(salary) 
+FROM   employee 
+WHERE  salary < (SELECT Max(salary) 
+                 FROM   employee );
+
+
+
+34)write SQL to find third highest salary(use nested query)
+
+SELECT Max(salary) 
+FROM   employee 
+WHERE  salary < (SELECT Max(salary) 
+                 FROM   employee 
+                 WHERE  salary NOT IN(SELECT Max(salary) 
+                                      FROM   employee)) 
+
+35) @ExceptionHandling--check this
+
+https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/#1
+
+36) Different scopes of maven:
+
+
+37)spring security explanation?
+https://www.baeldung.com/spring-boot-security-autoconfiguration
+
+38)Hash map with custom objects as key:
+https://www.geeksforgeeks.org/how-to-create-a-java-hashmap-of-user-defined-class-type/
+
+39)what is static and why we use it?
+
+
+40)composit keys in hibernate:
+https://www.baeldung.com/jpa-composite-primary-keys
+
+
+41)@SprignBotApplication--explain this annoataion
+@SpringBootApplication its the equivalent of using @COnfiguaion,@EnableAutoConfiguartion and @ComponentScan
+Here,@Configuration which helps to identify the beans for particular spring dependancy injection
+@EnableAutoScan: which helps for autoscan,auto scan means if particular bean is available in class path, it will be auto scanned
+and will added to set of dependancies.
+@ComponentScan: its the places where you scans for components/beans.
+
+Basically spring allows to use single annoatation rather tahn using these 3 annotation.
+Also spring is loosely copupled, hence it allow to use each as indivudual annotation as well(exclude if you want to exclude anything specific)
+
+42)Java 8 features:
+Lamba expressions
+Stream API
+Default methods in interface
+Static methods in interface
+Functional interface
+Optional
+Method references
+Date API
+Nashorn/Javascript engine
+
+43)what is transactional? @transactional uses?
+https://www.javacodegeeks.com/2016/05/understanding-transactional-annotation-spring.html
+
+44)What is the diff between map and flatmap:
+map and flatmap both are intermediate stream operations
+Both map and flatmap can be applied to Stream<T> and returns STream<R>
+Now, Map produces one output for each value but flatmap produces arbitory number(0 or more) for each input value.
+
+https://www.youtube.com/watch?v=ZT_5eS6IpD8&list=PLzS3AYzXBoj84LfxRFAuM-eDlPRWvhGeJ&index=175
+
+45)JAVA 8 concepts:
+https://javaconceptoftheday.com/solving-real-time-queries-using-java-8-features-employee-management-system/
+
+46)  Use both having and group by in SQL for employee object
+
+SELECT department_id, count(*) "No. of Employee" 
+FROM employees 
+GROUP BY  department_id 
+HAVING count(*)>2;
+https://www.w3resource.com/sql/group-by.php
+
+47)why we use service/controller/reposiroty instead component what specical use those have apart from component?
+https://www.baeldung.com/spring-component-repository-service
+
+48)If i have animal and cat and dog, if i have to add to the list how i can use should i use ? inside list or just animal?
+https://stackoverflow.com/questions/3009745/what-does-the-question-mark-in-java-generics-type-parameter-mean.
+
+49)How you create immutable class?
+https://www.javatpoint.com/how-to-create-immutable-class
+
+50)Difference between post/put/patch
+POST is always for creating a resource ( does not matter if it was duplicated ) 
+PUT is for checking if resource is exists then update , else create new resource.
+PATCH is always for update a resource with out chekcing whether it exists 
+
+51)what is the diff between persist and save in hibernate?
+Save:
+will return the id/identifier when the object is saved to the database.
+will also save when the object is tried to do the same by opening a new session after it is detached.
+Persist:
+will return void when the object is saved to the database.
+will throw PersistentObjectException when tried to save the detached object through a new session.
+
+51)difefrence between statement/prepared statement/callables
+
+https://javaconceptoftheday.com/statement-vs-preparedstatement-vs-callablestatement-in-java/
+
+52)whats the adv of using runnable and thread class. WHne we need to use it?
+
+https://www.geeksforgeeks.org/implement-runnable-vs-extend-thread-in-java/#:~:text=When%20we%20extend%20Thread%20class,object%20and%20associate%20with%20it.
+
+53)phases of maven
+https://www.baeldung.com/maven-goals-phases
+
+54)what is the scope in maven. in pom.xml scope is mentioned what is that?
+
+https://www.baeldung.com/maven-dependency-scopes
+
+55)what is marker interface? how to write custom marker interface?
+MArker interface is an interface having no data memeber and member functions defined in it.
+In simpler terms, its an empty interface which is calledmarkerinterface.
+It tells compiler taht you have something specific to do with it.It just an information/meta data to compiler/JDK
+that its related to serializable or cloning.
+e.x cloneable/serilaizable
+
+https://www.baeldung.com/java-marker-interfaces#:~:text=A%20marker%20interface%20is%20an,also%20called%20a%20tagging%20interface.
+
+
+55)what is idempotent  in http ,post is not idempotent
+
+56)Exlain oops concepts in java
+https://www.javatpoint.com/java-oops-concepts
+
+57)explain encapsulation in java how you are using with example?
+https://www.javatpoint.com/encapsulation
+
+58)difference between class not found exception and noCLassDefExcerption?
+
+https://javaconceptoftheday.com/classnotfoundexception-vs-noclassdeffounderror-in-java/
+
+59)different ways to create therads and which is better option?
+https://howtodoinjava.com/java/multi-threading/java-runnable-vs-thread/
+
+60)How you write custom exception in java?
+https://www.javatpoint.com/custom-exception
+
+61)How you will create class as immutable?
+
+1)Create a class with final so that it cant be extended.
+2)Make all fields private so that direct access not allowed
+3)dont provide setter methods for variables
+4)Make all mutable fields as final so that it can be assigned only once.
+5)initialize all the fields via constructor only performing a deep copy
+6)perfom cloning of objects in getter method to return a copy rather than returning the actual object reference.
+never return real object refernce instead return copy of that.
+
+61)what is singleton how you create give the examples for it?
+Singleton is a class whose only one instance can be created at any given time in one JVM.
+
+public class Animal
+{
+private static Animal single_instance=null;
+
+private Animal()
+{
+
+}
+
+public static Animal getInstance()
+{
+
+if(single_instance==null)
+{
+single_instance=new Animal();
+}
+return single_instance;
+}
+
+Outside of this class,to invoke, Animal.getInstance() which always returns same instance;
+
+}
+
+62)Why we use hibernate why not JDBC?
+1)Mapping member variables to columns using SQL queries needed in JDBC but not needed in hibernate.
+need to write code to map variables to columns using SQL queries
+2)mapping relationships(foreign key/primary key) is pain in JDBC
+3)handling data types e.x boolean or Y or N but in DB might be Y or N . Manual handling is difficult.
+4)managing the changes in object state.If there is any chnages in business layer,need to handle it manually.
+5)Data base design needed in JDBC which is not required
+6)Dao method to save the objects needed in JDBC which is not needed
+7)Hibernate eliminates all the boiler plate code that comes with JDBC
+8)Hibernate supports HQL which is more object oriented
+9)It provides transaction management implicitly
+10)Hibernate throws JDBC exception or Hibernate exception which are unchecked exception,so no need to worry about handling exception
+using try and catch
+11)Hibernate supports caching for better performance.
+
+
+63)when we need to override hashcode and equals?
+what happens when we dont override equals?
+
+https://www.youtube.com/watch?v=4X5Kgi2VltI
+
+63(how you craete out of memory exception?
+
+https://www.geeksforgeeks.org/understanding-outofmemoryerror-exception-java/
+
+64)difference between synchronized and volatile:
+https://www.geeksforgeeks.org/difference-between-atomic-volatile-and-synchronized-in-java/
+
+64) wait and sleep difference:
+The fundamental difference is that wait() is from Object and sleep() is a static method of Thread.
+
+The major difference is that wait() releases the lock while sleep() doesn’t release any lock while waiting.
+
+wait() is used for inter-thread communication while sleep() is used to introduce a pause on execution, generally.
+
+wait() should be called from inside synchronise or else we get an IllegalMonitorStateException, while sleep() can be called anywhere.
+
+To start a thread again from wait(), you have to call notify() or notifyAll(). As for sleep(), the thread gets started after a specified time interval.
+
+https://stackoverflow.com/questions/1036754/difference-between-wait-and-sleep#:~:text=The%20major%20difference%20is%20that,a%20pause%20on%20execution%2C%20generally.
+
+
+65) ACID properties and atomicity explanation?
+https://blog.sqlauthority.com/2016/04/10/acid-properties-database-interview-question-week-066/
+
+
+67)SOLID principals:
+https://www.javatpoint.com/solid-principles-java
+
+68)difefrence between callable and runnable
+https://www.geeksforgeeks.org/difference-between-callable-and-runnable-in-java/
+
+69)rest template and JDBC template
+micro service architecture
+employee filter by age and sort by age
+employee filter by age and sort by age and name as well
+when u override hashcode nad equals?
+transient and volatile
+callable and runnable
+how you configure two databases confuguration?
+
+
+
+
+
+
+
+
+
+
+
+
+
+Mphasis:
+
+1)Java 8 new features
+2)deafult
+3)satic methods
+4)filetr based on employee salary >10000 but want it in map object with Id
+
+https://javaconceptoftheday.com/solving-real-time-queries-using-java-8-features-employee-management-system/
+
+In collection instead collect to list use map--check this 
+
+5)difference between post/patch/put
+POST is always for creating a resource ( does not matter if it was duplicated ) PUT is for checking if resource is exists then update , else create new resource.
+PATCH is always for update a resource
+6)statement callable statment preparestatment
+7)diff between fucntions and procedure
+8)have you worked on views
+9)JPA annotation in hibernate
+10)whats the diff between JPA and hiberante
+11)write SQL to find third highest salary(use nested query)
+SELECT Max(salary) 
+FROM   employee 
+WHERE  salary < (SELECT Max(salary) 
+                 FROM   employee 
+                 WHERE  salary NOT IN(SELECT Max(salary) 
+                                      FROM   employee)) 
+
+SELECT * FROM `employee` ORDER BY `salary` DESC LIMIT 1 OFFSET 2;
+
+
+12) Use both having and group by in SQL for employee object
+
+SELECT department_id, count(*) "No. of Employee" 
+FROM employees 
+GROUP BY  department_id 
+HAVING count(*)>2;
+https://www.w3resource.com/sql/group-by.php
+
+
+13)builder pattern ?
+14)singleton use synchronised
+15)how you make sure cloneable not breaking singleton
+16)callable service in therads
+17)whats the adv of using runnable and thread class. WHne we need to use it?
+18)difference between svn and git
+19)what all the scopes of maven
+
+https://www.baeldung.com/maven-dependency-scopes
+21)diff between association/aggregation 
+22)what is genearlization java
+23)
+what @value does
+24)what @config does?---
+25)what @configutration and @bean does?
+26)what is idempotent  in http ,post is not idempotent
+27)204(when no content)/201/500/403/404/401
+28)phases of maven
+29)whats diff spring core?
+30)what all diff in sonar varieies
+bug/vulnerabilty/code smell in sonar?
+31)while doing code review what all u consider?
+32)i will give you use case what all the steps you follow till you merge the code?
+33)what all the annotation used in spring boot to start that?
+34)what is the scope in maven. in pom.xml scope is mentioned what is that?
+35)Difference between oracle and SQL?
+36)how you invoke other micro service--rest template?--check this
+37)hystorix command chekc this as well.
+38(what all the diff egneration types of ID used in hibernate?
+39)what is cacheable in hibernate?
+40)java 8 changes in hashmap.
+41)how you invoke other microservice?--resttemplate/web client
+42)what all annotation used in spring boot application?
+
+
+Thermofishal:
+
+1) what @component does and compoent scan does
+2)list vs linked list difference
+3)whats the diff between Iterator and list iterator
+4)explain conurrent hash map how it works?
+5)how u implemented threads in project?
+2)what all diff types of autowire by default which is enabled.
+3)what all HTTP codes?
+4)how request maps to respective controler what all the annotation used for that?
+5)how you define entity with hibernate configuaion what all annottaion used?
+6)@ExceptionHandling--check this
+
+https://howtodoinjava.com/spring-core/spring-exceptionhandler-annotation/#1
+
+
+7)how you limit the request comes from UI in controller
+8)explain how service and repository works what all annottaion needs to be considered?
+9)[{()}] returns if open and close is true else return false
+
+https://www.geeksforgeeks.org/check-for-balanced-parentheses-in-an-expression/
+
+https://www.baeldung.com/java-balanced-brackets-algorithm
+10)how in mvc controller works?
+11)how you define controller how it will be mappng takes place along with return tyoe
+12)how it maps JSON to object and vice versa?
+13)how services talks to each others?
+14)have you used tsored procedure?
+15)mockito to check with DB details how you write
+16)@advice does?
+17)how exception handling works in your project
+https://examples.javacodegeeks.com/enterprise-java/spring/mvc/spring-mvc-controlleradvice-annotation-example/
+https://www.journaldev.com/2651/spring-mvc-exception-handling-controlleradvice-exceptionhandler-handlerexceptionresolver
+18)what if in repository exception occurs how it communicates?
+19)have u done DB design? schema structure?
+20)when you encounter situation that u need to use abstract factory in ur project?explain base don ur project
+21)what is functional interfcaes in java 8
+22)Microservices design pattern
+23)memory structure in JVM
+24)can u call garbage colleciton manually how u do it?
+25)spring mvc good understanding with examples check this with good tutorial
+26)what is autowire what are the diff types of autorwire?
+
+hotel management system--how u develop
+
+people soft:
+
+1)explain high level architecture of your project?
+2)how client level its being implemnetd for each banks?
+
+1)public static void main can i write static public void main?
+2)can i write public void static main? public void static main(String[] args)   invalid..
+3)can u use this and super inside constructor?
+4)what is the return type of constructor?
+5)what is class path and what is path? who uses it?
+CLass path describes the location where .class files are available.
+Copiler will use and JVM will use to look at required .class files
+
+https://www.youtube.com/watch?v=MupLMFz0O1s
+6)constructor returns any value i am not asking return type?
+7)can we overlaod main method?
+8(can we override main method?
+9)i have a list of objects where i wnat to be ordered and not duplicate which i can use?
+10)what is the parent of exception?
+11)i have null piinter/arithmetic and filenotfound what is the orde u define these exception?
+12)I have 1 lack record in DB its taking 3min want to retriev in 2.5 min what would be your approch?
+
+https://www.sisense.com/blog/8-ways-fine-tune-sql-queries-production-databases/
+13)what is the diff between persist and save in hibernate?
+Save:
+will return the id/identifier when the object is saved to the database.
+will also save when the object is tried to do the same by opening a new session after it is detached.
+Persist:
+will return void when the object is saved to the database.
+will throw PersistentObjectException when tried to save the detached object through a new session.
+
+https://www.tutorialspoint.com/difference-between-save-and-persist-in-hibernate
+
+
+14)what is the diff between load and get
+15)sleep and wait diff
+16)i have a thread which i make to pause 3min but after that i wnat to awake it 1.5 sec what you will use?
+what you use for releasing lock?
+
+The fundamental difference is that wait() is from Object and sleep() is a static method of Thread.
+
+The major difference is that wait() releases the lock while sleep() doesn’t release any lock while waiting.
+
+wait() is used for inter-thread communication while sleep() is used to introduce a pause on execution, generally.
+
+wait() should be called from inside synchronise or else we get an IllegalMonitorStateException, while sleep() can be called anywhere.
+
+To start a thread again from wait(), you have to call notify() or notifyAll(). As for sleep(), the thread gets started after a specified time interval.
+
+https://stackoverflow.com/questions/1036754/difference-between-wait-and-sleep#:~:text=The%20major%20difference%20is%20that,a%20pause%20on%20execution%2C%20generally.
+
+17)what is @component and @service?
+18(what is aop concept?
+19)different states of hibernates?
+20)what is the diff between process and threads?
+21)what is IOC?
+22__what is the diff between bean factory and application context?
+
+https://dzone.com/articles/difference-between-beanfactory-and-applicationcont
+23)what all the diff types of autowire?
+
+Morgan stanley round 1:
+1)Java 8 functional interface?
+2)for filter what is the functaional interface used?
+3)i have interface which implemented by two service how to autowire respective one?
+4)find non repeated character first character?
+5)
+
+round2:
+how from UI to server security implemented?who cna access who can not implemneted?
+define your project structure
+in DB how it will do security like other should not access other few can in DB level--castrmax some thing?
+Benifit of spring boot?
+why spring boot used over microservice?whats its advantages?
+how u r tetsing?
+its manual how its automated?
+If DB accessed by others how its done?
+how you make sure DB is not taking much time?approach?
+
+
+1)what is the approach u take while developing any URL?
+2)what is teh architecture u follow during microservice development?
+3)how u apply audting across methods--aspect approach
+4)what is ur aspiration?
+5)what is ur approach while developing anything--SOLID principals
+6)can u do ur program cacheable?--appraoch you follow for that?
+7)how security will atke care from UI to server side?
+R u used bearer along with spring security approach?
+8)how you do /contribution /epxlore to new things?
+9)how you mae sure code developerd will be in good and will nto casue much issues
+10)Dockers have you used?
+11)memory out of error--local produce madi how u resolve...
+12)micro service among multiple how u will come to tht service has issue?
+13)how u u deployment?
+14)what is asynchronous programming?
+
+
+string is immutable how u useful in collection?
+
+CTS:
+
+Define dependancy injection?
+i have huge traffic coming to application how u control in UI?
+I need to mve DB from one db to DB whats ur approach with out effecting production?
+microservice advtange and disadvantage
+fibonocci series
+spring boot advantage why we are using that?
+ACID properties and atomicity explanation?
+https://blog.sqlauthority.com/2016/04/10/acid-properties-database-interview-question-week-066/
+what is transaction?
+i need to write url mapping how you will do from starting?
+i have large amount data coming through UI request how can we control that in java
+
+Capgemini-2
+
+1)what is polymorphism in java?
+2)what are advantage of microservices?
+3)how u make sure to handle security for each roles?
+4)i have a RBI and other banks if i have to add new method which approach i can fo for?
+5)what is static? why we use it?
+6)can we do static method polymorpism? at run time? why we cant do?
+7)i have list of employee how you get only the employee with respective phone no?
+8)i want to get emplyee with respective department?
+9)in hibernate what is composit key how you achieve it?
+10)in hash map can i add employee object as key what if i add same object will it replace the same?
+11)whats ur roles and responibilty?
+12)do u have idea bout continous integration tool? how you use dthat?
+13)hash map with custom objects as key 
+
+CTS-2nd round:
+1)What is the actual use of spring boot? what benefit you get?
+2)wat annotation used and why all those?
+3)what if i dont want to use any particular class how you exclude that?
+4)how micro service communicates?
+6)why you are using actuators what is the purpose. How you monitor micro service using actuators?
+5)how you give security?
+6)how you give security to authentication?
+7)collection hierachy?
+8)whats is profiles in spring boot whts the use of it?
+9)remove duplicate in eacha nd print the final string which has more length
+for the program written what is complexity?
+--abcabaca
+-- acacaca
+-- acacbdaea 
+--acbdadacb​
+
+ 
+break or continue check that?
+10)find repeated number and missing no?
+[1,2,3,3,3,5,6,7]
+11)whta is concurrent hash map? under which it comes?e xplain about that
+11) @SprignBotApplication--explain this annoataion
+
+
+:
+
+1)Whether java is call by value or reference?explain
+2)what is wrapper classes why you use it? why you want to make it to object class(cos of pass by refernce)
+3)linked list and array list diff when u go for linked list and when you go for array list?
+4)want to sort by employee by salary which one you use?
+5)diff between hash map and hash set?
+6)can i use @compoent for controller?
+7)what all the stereo type annotations used?
+8)difference between controller and rest controller
+9)wht is content negotiation rest?
+10)@Resource annotatin. 
+11)what is qualifier? why we need ot use to avoid ambiguity
+12)other annotation for autowire?-resource
+13)how you sort using comparator?
+14)wnat to sort employee based on salary how you do that ?
+14)can we use colelctions.sort(list,comparator)--any other way?
+15)why we use marker interface?
+16)why string is immutable?
+17)what are the annotations you used in spring and spring boot?
+18)what is mapped by in hibernate?
+19)Server will support external format/json 
+
+Linked list: when we use it?
+
+Other way to sort?
+ Rest controller—who does the conversion
+
+
+Content-negotiation?
+
+Server will support external format/json 
+
+JSR annotation
+@primary:
+@resource
+
+Scopes in hibernate:
+
+WelsForgo 2nd:
+
+1)i am adding employee with 1 and latha
+again if i add employee 1 and latha what would be the size of collection?
+2)How can i use final to e1 and add again what about the behaviour will it work?
+3)i am calling class B which has DB call from class A How you write mockito for that?
+what all the scenario's you considered for that?
+4)how you custome immutable class?
+5)what is genrics whats the use of it why you use it?
+6) i have Animal class and dog and cat will be extending
+how you write list? will it be List of Animal or List<?>
+7)If something goes worng in environment how you trouble shoot?what all the things you consider for trouble shooting?
+8)how you monito your application what all teh thinsg you will chekc for that?
+9)how you get dump?
+10)how you check the databases in CMD?
+11)what is the diff between map and flatmap?
+why we use it?
+12)what is fall back mechanism in microservices?
+13)what is test driven?how u use it in ur project?
+14)what is transactional? @transactional uses?
+15)why we use service/controller/reposiroty instead component what specical use those have apart from component?
+16_design structual pattern?
+17)abstract and abstract factory? whne u use it? 
+how you use din your project?
+18)how you use factry pattern in spring?
+19)why we use final in class? if i do final class what happens?
+20)can i use try with out catch?
+map and flat map differences?
+2)concurrent hash map and customhash map difference?
+
+
+Capgemini -3rd round:
+1)What all java 8 features
+2)why funcational interfaces has only one abstract method?
+3)can i write custom marker interface and make blank. How JVM will come to know--instance of chekc the implementaion
+4)What is lazy initialization exception--when you are in service layer @Transaction used innside that,
+in controller layer if i use object.getList since its out of transaction i will gte that error. If its inside that transacation i will not get in service method
+5)DI and IOC both are same? or different?--
+6)what is setter injection and constructor injection? when we try to set mandatory field we can go for constructor injection
+7)why we write constructor with different parameters? is that required?--to set mandatory fields
+8_what is difference between functainal interface and normal interface?
+9)what all the different used in streams?
+10)how you used generics other than collection
+
+HCL 1st round:
+1)Explain OOPS concepts ---
+2)What is encapsutaion how its achieved in java
+3)WHat is maker interface?
+4)What all java 8 concepts you used?
+5)what is hashing inetrnal implementaion?
+6)what is faile fast and fail safe? give example for both?
+5)What is the difference between CLassNotFOundException adn NoDefExceptio?
+6)WHat is DI and IOC?
+7)What is difference between controller and rest controller?
+8)why we use spring boot?than spring?
+9)why we use micro services?
+10)how you invoke other services in Microservices?
+11)how you manage in acse if servcie not repsonding?
+12)what is laodbalancing in MS? how you achieve it?
+13)what is different libraries in Maven?
+14)what is diff between mavena nd ant?
+15)what is difference between heap table and temp table
+16)why we go for hibernate instead JDBC?
+17)what is difefrent scopes in spring?
+18)different ways to create thread which is better? and why?
+19)Why string is immutable?
+20)what is diff between stack and heap?
+21)difference between PUT and post?
+22)different HTTP codes?
+23)define exception heiarachy
+24)how you set up DB in spring boot? what all required you will consider?
+25)how you create immutable object?
+26)what is singleton how you create give the examples for it?
+27)how you write custom exception?
+
+HCL2
+
+1)OOPS concepts
+2)dead lock in threads
+3)wait and notify
+4)front to backend for user application
+5)thread safe singleton
+6)enum constructors
+7)opertaor overlaoding in java not there
+8)spring boot advantage
+9)hash code and equals
+10_immutable class
+11)string immutale why
+12)factory and abstract factory methods
+
+IBM:
+1)How you write cleint side service discovery?
+2)how you invoke that?
+3)shape why it should be interface? why not abstract class?
+4)should it be abstract in factory method? how you invoke since u cant create object of that?
+5)write abstract factory methd?
+6)what all embedded server being used in spring boot?
+7)what is beans life cycles?
+8)what is Inversion control?
+9)what is lambda?
+10)write program using streams to sort emplyee by name first then salary and then id?
+11)write a program where string has lower as well uppper cas eletters ,Reverse it first and then convert upper to lower and lower to upper?
+12)i have integer 123456 and with out using string reverse it.
+13)what is the difference between string buffer and string builder?
+14)what is static clock and init black?
+https://www.decodejava.com/static-initialization-block-vs-instance-initialization-block.htm#:~:text=An%20instance%20initialization%20block%20can,instance%20methods%20of%20the%20class.&text=Static%20block%20is%20called%20just,program%20when%20the%20class%20loads.
+15)what is fucntioanl inteface?how you create it?
+16)can we override static?
+17)exception handling globally
+18)spring security 
+
+JP morgan:
+
+1)Java memory explain
+2)garbage collection
+3)class overlaod and overriding
+4)mock and spy diff
+5)can we mock static
+6)how you loadbalancing in microservice?
+
+
+2nd round:
+1)to delete all the reocrds which collection u go for?
+2)to serach employee which collection?
+3)when u use map
+4)when u use builder how its being used?
+5)fetch all records which collection u use?
+6)want to sort based on firstname and last name how u do using comparator?
+
+
+Capgemini:
+1.Method overriding method overloading
+2.what is spring bean
+3. What is bean factory
+4. Diff between serializable and externalizable?
+5.Progam down
+6.Dependency injection
+7.Race conditio and dead loack situation.
+8.ArrayList and hash set diff
+spring batch
+
+
+
+Methdo overrding/overlaoding/method hiding
+create a object and destruction process through gc called now how hash code works for this from the beginnign to end?
+what is contsructor how its works ?
+diff ways to create objects
+
+CAPGEMINI(5th JUne)--kallada vijay rao
+what is cursor?
+mango DB? dackors swaggers
+why you use spring boot?
+how you ieretae map?
+how you gte first record in DB --
+how you get in oracle?
+
+
+SLK(5th JUne)---sujit
+1)how you invoke service deploye din diff servers?
+2)diff annotation spring uses?
+3)have u used histrix? how you configure that?
+4)left outer join scenario when u use it with example?
+5)spring version?
+6)How you configure yiur own server in spring boot?
+7)did u use spring batch?
+8)spring boot version used?
+9)how you mapped table in java?
+10)did u use spring security?
+
+
+
+
+IBM-barclays:
+
+what do you mean by classNotFoundException and npDefException?
+
+what is the chnage done in hash map in java 8?
+
+when we will not suse lambda expression?
+
+when we need to override hashcode and equals?
+what happens when we dont override equals?
+
+https://www.youtube.com/watch?v=4X5Kgi2VltI
+
+factory and abstarct factory
+
+what all the patterns which spring uses?
+
+final and extensible final?
+
+
+run time exceptionw hat is that?
+
+if parent has protected add throws io exception what the scenaio child class if it wnats to override that?
+
+inetrmidiate and terminal what if if we use only intermediate?
+
+i have set i all add latha twice what happens will it throw copile time?
+
+
+
+Navigable amp?
+syncronized and volatile?
+how to handle million records going to save in DB?
+diff types of propogations in transaction?
+
+serializable studenta nd address where address not serializable?
+
+if has more onvokation for APT written how u handle?--multiple instance not an answer.
+
+spring security --in application
+
+user anme password authenticated--
+
+once done uuid generator will generate token and it added in cache and appended with header.
+
+
+
+
+
+
+
+
+
+
+
+classNotFoundException and npDefException
+
+heap table and temp table
+
+ant and maven diff
+
+
+
+
+
+
+
+
+{
+
+@GetMapping("method1)
+public sring()
+{
+
+}
+
+/chargeCLass/chargeMethod?
+
+/team/players/{player-id}
+
+@RestCOntroller("team")
+
+
+@GetMapping("/players/{id}")
+public STring getPlaye(PathVariable("id") string 
+id)
+{
+
+
+
+
+historikscommands
+
+linked list with out use remove, 3rd elements
+
+
+
+
+
+
+https://www.geeksforgeeks.org/minimum-steps-to-reach-a-destination/
+
+https://www.geeksforgeeks.org/count-palindrome-sub-strings-string/
+
+https://www.faceprep.in/c/find-the-first-non-repeating-character-in-a-string/
+
+Array traversing
+
+https://csawesome.runestone.academy/runestone/books/published/csawesome/Unit6-Arrays/topic-6-2-traversing-arrays.html
+
+https://javarevisited.blogspot.com/2017/07/top-50-java-programs-from-coding-Interviews.html#at_pco=smlwn-1.0&at_si=60594f8c08df1b92&at_ab=per-2&at_pos=0&at_tot=1
+
+https://howtodoinjava.com/java8/stream-multiple-filters-example/
+
+https://www.baeldung.com/java-deadlock-livelock
+
+
+
+spring-cloud-eureka
+@eurekhaClient
+rest end point create madi
+
+loadbalancing --@ribbon
+@histrix---dashboard nodake
+@circuitbreaker--which instance is up/down?
+
+zuulproxy--crate madi--micro service host name/url/whats is the insatnces--infra team or dev team will do and deploy 
+
+8080/8081/8082
+
+1)microservice design patterns
+2)shared resources
+3)zuul proxy
+4)create microservice according to the business requirement
+5)cloud annotation
+6)infra team will take care of it create multiple yaml file and 
+we can check in production
+
+https://www.netjstech.com/2015/06/race-condition-in-java-multi-threading.html
+
+https://www.netjstech.com/2015/07/deadlock-in-java-multi-threading.html
+
+
+Double check login in singleton ?
+
+How to avoid concurrent modification exception/
+
+Given a list of employees, you need to filter all the employee whose age is greater than 20 and print the employee names.(Java 8 APIs only)
+
+Integer[] arr=new Integer[]{1,2,3,4,3,2,4,2}; how to remove duplicate elements?
+
+proxy bean
+
+
+What are all the difefrent metrics we can monitor using actuators?
+
+Spring cloud deployment to PCF? it provides in built services?
+
+deafult url of Eurekha url.--application.properties
+
+is there retry mechanism in circuit breaker?
+
+Annotation to enable eurekha?
+
+
+Aspect oriented program?
+
+CLient is apssing ABC. I want to intercept that method? For e.x amend with 123 by intercepting method parameters.
+
+HOw we cna do that ?
+
+@Aspect
+@Advice
+
+What all the standard we will follow for rets API?
+
+getMapping
+postMapping
+fr update it shoudl be put
+
+Standrd for API naming conventions-->path of the API?
+
+When do you use path variables and request parameters?(Optional )
+Can we have multiple variable in pathvariable--yes we can have
+
+Difefrent ways to binding property files?
+
+IF i want to throw error while starting the server? How do you ensure?
+
+@ConditionalAnnoational in spring--property is binded?
+
+I want to check whether value is there or not at the start?how to check. Property not found exception?
+
+how to chnage property value with out rebooting server?
+
+What all the different propogation levels available in hibernate?
+
+i have custom exception age>60. I want to roll back transaction when this exception is caught?
+
+How do we tell spring this?
+
+Two phase commit?--
+
+SAGA Pattern?
+
+Spring JMS--
+
+Active MQ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
